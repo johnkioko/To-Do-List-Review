@@ -2,8 +2,8 @@
 import _ from "lodash";
 import "./style.css";
 
-import displayTodo from "./modules/render.js";
-import clearCompletedTodo from "./modules/clear.js";
+import { displayTodo } from "./modules/render.js";
+import { clearCompletedTodo } from "./modules/clear.js";
 
 export const listBox = document.getElementById("listBox");
 const form = document.getElementById("todoform");
@@ -30,7 +30,7 @@ document.querySelector(".clear").addEventListener("click", (e) => {
 
 // Add to do
 
-function addTodo() {
+const addTodo = () => {
   const todoValue = formInput.value;
 
   const isDuplicate = todosArr.some(
@@ -59,9 +59,10 @@ function addTodo() {
     }
     formInput.value = "";
   }
-}
+};
 
 // Listen for a click event on the todos
+
 listBox.addEventListener("click", (e) => {
   const { target } = e;
   const parentElement = target.parentNode;
@@ -78,7 +79,7 @@ listBox.addEventListener("click", (e) => {
   action === "delete" && deleteTodo(todoId);
 });
 
-function checkTodo(todoId) {
+const checkTodo = (todoId) => {
   todosArr = todosArr.map((todo, index) => ({
     ...todo,
     completed: index === todoId ? !todo.completed : todo.completed,
@@ -86,16 +87,16 @@ function checkTodo(todoId) {
 
   displayTodo();
   localStorage.setItem("todo", JSON.stringify(todosArr));
-}
+};
 
-function editTodo(todoId) {
+const editTodo = (todoId) => {
   formInput.value = todosArr[todoId].description;
   editToDo = todoId;
-}
+};
 
-function deleteTodo(todoId) {
+const deleteTodo = (todoId) => {
   todosArr = todosArr.filter((todo, index) => index !== todoId);
   editToDo = -1;
   displayTodo();
   localStorage.setItem("todo", JSON.stringify(todosArr));
-}
+};
