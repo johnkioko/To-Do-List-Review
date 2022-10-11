@@ -1,6 +1,6 @@
 /* eslint-disable*/
 import displayTodo from "./render.js";
-import { todosArr } from "../index.js";
+import { todosArr, updateLocalStorage } from "../index.js";
 
 function updateIndex() {
   let i = 0;
@@ -15,7 +15,5 @@ export default function clearCompletedTodo(todosArr) {
 
   displayTodo();
   updateIndex();
-  window.location.reload(
-    localStorage.setItem("todo", JSON.stringify(todosArr))
-  );
+  window.location.reload(updateLocalStorage());
 }

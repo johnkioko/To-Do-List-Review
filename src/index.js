@@ -12,14 +12,16 @@ const formInput = document.getElementById("text");
 export let todosArr = JSON.parse(localStorage.getItem("todo")) || [];
 let editToDo = -1;
 
-displayTodo();
+displayTodo()
+
+export const updateLocalStorage = () => localStorage.setItem("todo", JSON.stringify(todosArr));
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   addTodo();
   displayTodo();
-  localStorage.setItem("todo", JSON.stringify(todosArr));
+  updateLocalStorage();
 });
 
 document.querySelector(".clear").addEventListener("click", (e) => {
@@ -86,7 +88,7 @@ const checkTodo = (todoId) => {
   }));
 
   displayTodo();
-  localStorage.setItem("todo", JSON.stringify(todosArr));
+  updateLocalStorage();
 };
 
 const editTodo = (todoId) => {
@@ -98,5 +100,5 @@ const deleteTodo = (todoId) => {
   todosArr = todosArr.filter((todo, index) => index !== todoId);
   editToDo = -1;
   displayTodo();
-  localStorage.setItem("todo", JSON.stringify(todosArr));
+  updateLocalStorage();
 };
