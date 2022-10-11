@@ -1,0 +1,104 @@
+/* eslint-disable*/
+
+import "./style.css";
+
+import { displayTodo } from "./modules/render.js";
+import { clearCompletedTodo } from "./modules/clear.js";
+
+export const listBox = document.getElementById("listBox");
+const form = document.getElementById("todoform");
+const formInput = document.getElementById("text");
+
+export let todosArr = JSON.parse(localStorage.getItem("todo")) || [];
+let editToDo = -1;
+
+displayTodo()
+
+export const updateLocalStorage = () => localStorage.setItem("todo", JSON.stringify(todosArr));
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  addTodo();
+  displayTodo();
+  updateLocalStorage();
+});
+
+document.querySelector(".clear").addEventListener("click", (e) => {
+  e.preventDefault();
+
+  clearCompletedTodo(todosArr);
+});
+
+// Add to do
+
+const addTodo = () => {
+  const todoValue = formInput.value;
+
+  const isDuplicate = todosArr.some(
+    (todo) => todo.description.toUpperCase() === todoValue.toUpperCase()
+  );
+
+  if (todoValue === "") {
+    alert("Todo's input is empty!");
+  } else if (isDuplicate) {
+    alert("Todo's already exist");
+  } else {
+    if (editToDo >= 0) {
+      todosArr = todosArr.map((todo, index) => ({
+        ...todo,
+        description: index === editToDo ? todoValue : todo.description,
+      }));
+      editToDo = -1;
+    } else {
+      const todo = {
+        description: todoValue,
+        completed: false,
+        index: todosArr.length + 1,
+      };
+
+      todosArr.push(todo);
+    }
+    formInput.value = "";
+  }
+};
+
+// Listen for a click event on the todos
+
+listBox.addEventListener("click", (e) => {
+  const { target } = e;
+  const parentElement = target.parentNode;
+
+  if (parentElement.className !== "list-items") return;
+
+  const todo = parentElement;
+
+  const todoId = Number(todo.id);
+  const { action } = target.dataset;
+
+  action === "check" && checkTodo(todoId);
+  action === "edit" && editTodo(todoId);
+  action === "delete" && deleteTodo(todoId);
+});
+
+const checkTodo = (todoId) => {
+  todosArr = todosArr.map((todo, index) => ({
+    ...todo,
+    completed: index === todoId ? !todo.completed : todo.completed,
+  }));
+
+  displayTodo();
+  updateLocalStorage();
+};
+
+const editTodo = (todoId) => {
+  formInput.value = todosArr[todoId].description;
+  editToDo = todoId;
+};
+
+const deleteTodo = (todoId) => {
+  todosArr = todosArr.filter((todo, index) => index !== todoId);
+  editToDo = -1;
+  displayTodo();
+  updateLocalStorage();
+};
